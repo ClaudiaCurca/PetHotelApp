@@ -16,7 +16,7 @@ namespace PetHotelApp.Repository
         {
             this.dbContext = dbContext;
         }
-        public List<AnimalModel> GetAllAnimals(Animal animal)
+        public List<AnimalModel> GetAllAnimals()
         {
             List<AnimalModel> animalList = new List<AnimalModel>();
             foreach(Animal a in dbContext.Animals)
