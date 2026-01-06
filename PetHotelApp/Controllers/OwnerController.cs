@@ -1,10 +1,19 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PetHotelApp.Data;
+using PetHotelApp.Models;
+using PetHotelApp.Repository;
 
 namespace PetHotelApp.Controllers
 {
     public class OwnerController : Controller
     {
+        private OwnerRepository _repository;
+
+        public OwnerController(ApplicationDbContext dbContext)
+        {
+            _repository = new OwnerRepository(dbContext);
+        }
         // GET: OwnerController
         public ActionResult Index()
         {
@@ -20,7 +29,7 @@ namespace PetHotelApp.Controllers
         // GET: OwnerController/Create
         public ActionResult Create()
         {
-            return View();
+            return View("Create");
         }
 
         // POST: OwnerController/Create
@@ -30,11 +39,18 @@ namespace PetHotelApp.Controllers
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                OwnerModel owner = new OwnerModel();
+                var task = TryUpdateModelAsync(owner);
+                task.Wait();
+                if (task.Result)
+                {
+                    _repository.CreateOwner(owner);
+                }
+                return View("Create");
             }
             catch
             {
-                return View();
+                return View("Create");
             }
         }
 

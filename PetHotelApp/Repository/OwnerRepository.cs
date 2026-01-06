@@ -6,7 +6,7 @@ namespace PetHotelApp.Repository
 {
     public class OwnerRepository
     {
-        ApplicationDbContext dbContext;
+        private ApplicationDbContext dbContext;
 
         public OwnerRepository()
         {
