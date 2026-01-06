@@ -40,12 +40,16 @@ namespace PetHotelApp.Repository
             }
             return reservationList;
         }
-        public List<ReservationModel> GetAllReservationsByStatus(string status)
+        public List<ReservationModel> GetAllReservationsByStatus(ReservationStatus status)
         {
             List<ReservationModel> reservationList = new List<ReservationModel>();
-            foreach (Reservation r in dbContext.Reservations.Where(x => x.Status == status))
+            foreach (var r in dbContext.Reservations)
             {
-                reservationList.Add(MapDbObjectToModel(r));
+               
+                if (r.Status == status) 
+                {
+                    reservationList.Add(MapDbObjectToModel(r));
+                }
             }
             return reservationList;
         }

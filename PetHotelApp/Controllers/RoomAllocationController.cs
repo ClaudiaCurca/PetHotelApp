@@ -1,10 +1,21 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using PetHotelApp.Data;
+using PetHotelApp.Models;
+using PetHotelApp.Repository;
 
 namespace PetHotelApp.Controllers
 {
     public class RoomAllocationController : Controller
     {
+        private RoomAllocationRepository _repository;
+
+        public RoomAllocationController(ApplicationDbContext dbContext)
+        {
+            _repository = new RoomAllocationRepository(dbContext);
+        }
+
         // GET: RoomAllocationController
         public ActionResult Index()
         {
@@ -20,7 +31,7 @@ namespace PetHotelApp.Controllers
         // GET: RoomAllocationController/Create
         public ActionResult Create()
         {
-            return View();
+            return View("Create");
         }
 
         // POST: RoomAllocationController/Create
@@ -30,11 +41,18 @@ namespace PetHotelApp.Controllers
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                RoomAllocationModel allocation = new RoomAllocationModel();
+                var task = TryUpdateModelAsync(allocation);
+                task.Wait();
+                if (task.Result)
+                {
+                    _repository.CreateRoomAllocation(allocation);
+                }
+                return View("Create");
             }
             catch
             {
-                return View();
+                return View("Create");
             }
         }
 

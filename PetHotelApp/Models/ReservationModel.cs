@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PetHotelApp.Models
 {
@@ -18,7 +19,7 @@ namespace PetHotelApp.Models
         [DataType(DataType.Date)]
         public DateTime EndDate { get; set; }
 
-        [StringLength(50, ErrorMessage = "String too long (max. 50 chars)")]
-        public string? Status { get; set; }
+        [Column(TypeName = "nvarchar(20)")]
+        public ReservationStatus? Status { get; set; } = ReservationStatus.Pending;
     }
 }
