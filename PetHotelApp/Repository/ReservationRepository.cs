@@ -19,7 +19,7 @@ namespace PetHotelApp.Repository
         public List<ReservationModel> GetAllReservations()
         {
             List<ReservationModel> reservationModelsList = new List<ReservationModel>();
-            foreach(Reservation r in dbContext.Reservations)
+            foreach (Reservation r in dbContext.Reservations)
             {
                 reservationModelsList.Add(MapDbObjectToModel(r));
             }
@@ -34,7 +34,7 @@ namespace PetHotelApp.Repository
         public List<ReservationModel> GetReservationByAnimalId(Guid idAnimal)
         {
             List<ReservationModel> reservationList = new List<ReservationModel>();
-            foreach (Reservation r in dbContext.Reservations.Where(x=>x.IdAnimal==idAnimal))
+            foreach (Reservation r in dbContext.Reservations.Where(x => x.IdAnimal == idAnimal))
             {
                 reservationList.Add(MapDbObjectToModel(r));
             }
@@ -43,7 +43,7 @@ namespace PetHotelApp.Repository
         public List<ReservationModel> GetAllReservationsByStatus(string status)
         {
             List<ReservationModel> reservationList = new List<ReservationModel>();
-            foreach(Reservation r in dbContext.Reservations.Where(x => x.Status == status))
+            foreach (Reservation r in dbContext.Reservations.Where(x => x.Status == status))
             {
                 reservationList.Add(MapDbObjectToModel(r));
             }
@@ -92,7 +92,7 @@ namespace PetHotelApp.Repository
         private Reservation MapModelToDbObject(ReservationModel reservationModel)
         {
             Reservation reservation = new Reservation();
-            if(reservationModel != null)
+            if (reservationModel != null)
             {
                 reservation.IdReservation = reservationModel.IdReservation;
                 reservation.IdAnimal = reservationModel.IdAnimal;

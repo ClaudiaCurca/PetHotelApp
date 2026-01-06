@@ -19,7 +19,7 @@ namespace PetHotelApp.Repository
         public List<OwnerModel> GetAllOwners()
         {
             List<OwnerModel> ownerList = new List<OwnerModel>();
-            foreach(Owner o in dbContext.Owners)
+            foreach (Owner o in dbContext.Owners)
             {
                 ownerList.Add(MapDbObjectToModel(o));
             }
@@ -86,7 +86,7 @@ namespace PetHotelApp.Repository
         }
         public void DeleteOwner(OwnerModel ownerModel)
         {
-            Owner existingOwner = dbContext.Owners.FirstOrDefault(x=>x.IdOwner == ownerModel.IdOwner);
+            Owner existingOwner = dbContext.Owners.FirstOrDefault(x => x.IdOwner == ownerModel.IdOwner);
             if (existingOwner != null)
             {
                 dbContext.Owners.Remove(existingOwner);
@@ -98,7 +98,7 @@ namespace PetHotelApp.Repository
         private OwnerModel MapDbObjectToModel(Owner dbOwner)
         {
             OwnerModel ownerModel = new OwnerModel();
-            if(dbOwner != null)
+            if (dbOwner != null)
             {
                 ownerModel.IdOwner = dbOwner.IdOwner;
                 ownerModel.FirstName = dbOwner.FirstName;
@@ -112,7 +112,7 @@ namespace PetHotelApp.Repository
         private Owner MapModelToDbObject(OwnerModel ownerModel)
         {
             Owner owner = new Owner();
-            if(ownerModel != null)
+            if (ownerModel != null)
             {
                 owner.IdOwner = ownerModel.IdOwner;
                 owner.FirstName = ownerModel.FirstName;

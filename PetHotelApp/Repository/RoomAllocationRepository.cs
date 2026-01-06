@@ -18,8 +18,8 @@ namespace PetHotelApp.Repository
         public List<RoomAllocationModel> GetAllAllocations()
         {
             List<RoomAllocationModel> roomAllocationsList = new List<RoomAllocationModel>();
-            
-            foreach(RoomAllocation r in dbContext.RoomAllocations)
+
+            foreach (RoomAllocation r in dbContext.RoomAllocations)
             {
                 roomAllocationsList.Add(MapDbObjectToModel(r));
             }
@@ -31,12 +31,12 @@ namespace PetHotelApp.Repository
             RoomAllocationModel roomAllocationModel = new RoomAllocationModel();
             roomAllocationModel = MapDbObjectToModel(dbContext.RoomAllocations.FirstOrDefault(x => x.IdAllocation == id));
             return roomAllocationModel;
-        
+
         }
         public List<RoomAllocationModel> GetRoomAllocatonByIdRoom(Guid roomId)
         {
             List<RoomAllocationModel> roomAllocationList = new List<RoomAllocationModel>();
-            foreach(RoomAllocation r in dbContext.RoomAllocations.Where(x=>x.IdRoom==roomId))
+            foreach (RoomAllocation r in dbContext.RoomAllocations.Where(x => x.IdRoom == roomId))
             {
                 roomAllocationList.Add(MapDbObjectToModel(r));
             }
@@ -94,13 +94,13 @@ namespace PetHotelApp.Repository
         private RoomAllocation MapModelToDbObject(RoomAllocationModel roomAllocationModel)
         {
             RoomAllocation roomAllocation = new RoomAllocation();
-            if(roomAllocationModel != null)
+            if (roomAllocationModel != null)
             {
                 roomAllocation.IdAllocation = roomAllocationModel.IdAllocation;
                 roomAllocation.IdAnimal = roomAllocationModel.IdAnimal;
                 roomAllocation.IdRoom = roomAllocationModel.IdRoom;
                 roomAllocation.CheckInDate = roomAllocationModel.CheckInDate;
-                roomAllocation.CheckOutDate = roomAllocationModel.CheckOutDate; 
+                roomAllocation.CheckOutDate = roomAllocationModel.CheckOutDate;
             }
             return roomAllocation;
         }
@@ -109,7 +109,7 @@ namespace PetHotelApp.Repository
         {
             RoomAllocationModel roomAllocationModel = new RoomAllocationModel();
 
-            if(roomAllocation != null)
+            if (roomAllocation != null)
             {
                 roomAllocationModel.IdAllocation = roomAllocation.IdAllocation;
                 roomAllocationModel.IdAnimal = roomAllocation.IdAnimal;
