@@ -1,0 +1,28 @@
+{
+  "profiles": {
+    "PetHotelApp": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT,ConnectionStrings__DefaultConnection": "Development,Data Source/=DESKTOP-C82NFLP\\\\MSSQLSERVER01;Initial Catalog=petHotel;User ID=Claudia;Password=TempStrongPassword#2025;Multiple Active Result Sets=True;Trust Server Certificate=True"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:7267;http://localhost:5169"
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:53241",
+      "sslPort": 44344
+    }
+  }
+}
