@@ -100,6 +100,7 @@ namespace PetHotelApp.Repository
             OwnerModel ownerModel = new OwnerModel();
             if(dbOwner != null)
             {
+                ownerModel.IdOwner = dbOwner.IdOwner;
                 ownerModel.FirstName = dbOwner.FirstName;
                 ownerModel.LastName = dbOwner.LastName;
                 ownerModel.PhoneNumber = dbOwner.PhoneNumber;
@@ -113,6 +114,7 @@ namespace PetHotelApp.Repository
             Owner owner = new Owner();
             if(ownerModel != null)
             {
+                owner.IdOwner = ownerModel.IdOwner;
                 owner.FirstName = ownerModel.FirstName;
                 owner.LastName = ownerModel.LastName;
                 owner.PhoneNumber = ownerModel.PhoneNumber;
