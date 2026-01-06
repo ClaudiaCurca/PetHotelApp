@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using PetHotelApp.Data;
 using PetHotelApp.Models;
 using PetHotelApp.Repository;
@@ -8,10 +9,12 @@ namespace PetHotelApp.Controllers
 {
     public class AnimalController : Controller
     {
-        private AnimalRepository _repository;
+        private AnimalRepository _animalRepository;
+        private OwnerRepository _ownerRepository;
         public AnimalController(ApplicationDbContext dbContext)
         {
-            _repository = new AnimalRepository(dbContext);
+            _animalRepository = new AnimalRepository(dbContext);
+            _ownerRepository = new OwnerRepository(dbContext);
         }
 
         // GET: AnimalController
@@ -29,6 +32,7 @@ namespace PetHotelApp.Controllers
         // GET: AnimalController/Create
         public ActionResult Create()
         {
+            PopulateOwnersDropdown();
             return View("Create");
         }
 
@@ -37,19 +41,25 @@ namespace PetHotelApp.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
         {
+
             try
             {
                 AnimalModel model = new AnimalModel();
-                var task = TryUpdateModelAsync(model);
-                if (task.Result)
+
+                if (TryUpdateModelAsync(model).Result)
                 {
-                    _repository.CreateAnimal(model);
+                    _animalRepository.CreateAnimal(model);
+                    return RedirectToAction(nameof(Index));
                 }
-                return View("Create");
+
+                PopulateOwnersDropdown();
+                return View(model);
             }
             catch
             {
-                return View("Create");
+                PopulateOwnersDropdown();
+
+                return View();
             }
         }
 
@@ -94,5 +104,14 @@ namespace PetHotelApp.Controllers
                 return View();
             }
         }
+        private void PopulateOwnersDropdown()
+        {
+            var owners = _ownerRepository.GetAllOwners()
+                                         .Select(o => new { o.IdOwner, FullName = o.FirstName + " " + o.LastName })
+                                         .ToList();
+
+            ViewBag.OwnerList = new SelectList(owners, "IdOwner", "FullName");
+        }
     }
+
 }

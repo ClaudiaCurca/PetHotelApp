@@ -48,7 +48,7 @@ namespace PetHotelApp.Controllers
                 {
                     _repository.CreateRoomAllocation(allocation);
                 }
-                return View("Create");
+                return RedirectToAction(nameof(Index));
             }
             catch
             {

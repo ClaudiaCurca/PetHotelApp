@@ -47,7 +47,7 @@ namespace PetHotelApp.Controllers
                 {
                     _repository.CreateReservation(reservation);
                 }
-                return View("Create");
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
