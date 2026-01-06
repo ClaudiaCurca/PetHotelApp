@@ -7,7 +7,7 @@ namespace PetHotelApp.Models
         [Key]
         public Guid IdReservation { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Animal Id is required")]
         public Guid IdAnimal { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]

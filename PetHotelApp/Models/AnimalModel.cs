@@ -7,10 +7,10 @@ namespace PetHotelApp.Models
         [Key]
         public Guid IdAnimal { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Owner Id is required")]
         public Guid IdOwner { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Name is required")]
         [StringLength(100, ErrorMessage = "String too long (max. 100 chars)")]
         public string Name { get; set; } = null!;
 

@@ -13,7 +13,7 @@ namespace PetHotelApp.Models.DBObjects
         public Guid IdRoom { get; set; }
         public int? Capacity { get; set; }
         public decimal? PricePerDay { get; set; }
-        public byte[]? RoomType { get; set; }
+        public string? RoomType { get; set; }
 
         public virtual ICollection<RoomAllocation> RoomAllocations { get; set; }
     }
