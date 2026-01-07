@@ -58,44 +58,60 @@ namespace PetHotelApp.Controllers
         }
 
         // GET: ReservationController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(Guid id)
         {
-            return View();
+            var reservation = _repository.GetReservationById(id);
+            return View("Edit", reservation);
         }
 
         // POST: ReservationController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Guid id, IFormCollection collection)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var reservation = _repository.GetReservationById(id);
+                var task = TryUpdateModelAsync(reservation);
+                task.Wait();
+                if (task.Result)
+                {
+                    _repository.UpdateReservation(reservation);
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return RedirectToAction("Index", reservation);
+                }
+
             }
             catch
             {
-                return View();
+                return View("Index", id);
             }
         }
 
         // GET: ReservationController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(Guid id)
         {
-            return View();
+            var reservation = _repository.GetReservationById(id);
+            return View("Delete", reservation);
         }
 
         // POST: ReservationController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(Guid id, IFormCollection collection)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var reservation = _repository.GetReservationById(id);
+                _repository.DeleteReservation(reservation);
+                return RedirectToAction("Index", reservation);
             }
             catch
             {
-                return View();
+                return View("Delete", id);
             }
         }
     }
