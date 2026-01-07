@@ -57,44 +57,61 @@ namespace PetHotelApp.Controllers
         }
 
         // GET: OwnerController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(Guid id)
         {
-            return View();
+            var owner = _repository.GetOwnerById(id);
+            return View("Edit",owner);
         }
 
         // POST: OwnerController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Guid id, IFormCollection collection)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var owner = _repository.GetOwnerById(id);
+                var task = TryUpdateModelAsync(owner);
+                task.Wait();
+                if (task.Result)
+                {
+                    _repository.UpdateOwner(owner);
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return RedirectToAction("Index",id);
+                }
+                
             }
             catch
             {
-                return View();
+                return RedirectToAction("Index", id);
             }
         }
 
         // GET: OwnerController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(Guid id)
         {
-            return View();
+            var owner = _repository.GetOwnerById(id);
+            return View("Delete",owner);
         }
 
         // POST: OwnerController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(Guid id, IFormCollection collection)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var owner = _repository.GetOwnerById(id);
+                _repository.DeleteOwner(owner);
+                
+                return RedirectToAction("Index");
             }
             catch
             {
-                return View();
+                return View("Delete");
             }
         }
     }
