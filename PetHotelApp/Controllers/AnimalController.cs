@@ -20,13 +20,15 @@ namespace PetHotelApp.Controllers
         // GET: AnimalController
         public ActionResult Index()
         {
-            return View();
+            var animals = _animalRepository.GetAllAnimals();
+            return View("Index", animals);
         }
 
         // GET: AnimalController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(Guid id)
         {
-            return View();
+            var animal = _animalRepository.GetAnimalById(id);
+            return View("Details", animal);
         }
 
         // GET: AnimalController/Create
@@ -41,7 +43,6 @@ namespace PetHotelApp.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
         {
-
             try
             {
                 AnimalModel model = new AnimalModel();

@@ -17,13 +17,15 @@ namespace PetHotelApp.Controllers
         // GET: OwnerController
         public ActionResult Index()
         {
-            return View();
+            var owners = _repository.GetAllOwners();
+            return View("Index",owners);
         }
 
         // GET: OwnerController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(Guid id)
         {
-            return View();
+            var owner = _repository.GetOwnerById(id);
+            return View("Details", owner);
         }
 
         // GET: OwnerController/Create
