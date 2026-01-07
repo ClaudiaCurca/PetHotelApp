@@ -65,44 +65,60 @@ namespace PetHotelApp.Controllers
         }
 
         // GET: AnimalController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(Guid id)
         {
-            return View();
+            var animal = _animalRepository.GetAnimalById(id);
+            return View("Edit",animal);
         }
 
         // POST: AnimalController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Guid id, IFormCollection collection)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var model = _animalRepository.GetAnimalById(id);
+                var task = TryUpdateModelAsync(model);
+                task.Wait();
+                if (task.Result)
+                {
+                    _animalRepository.Update(model);
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return RedirectToAction("Index",id);
+                }
+                
             }
             catch
             {
-                return View();
+                return RedirectToAction("Index",id);
             }
         }
 
         // GET: AnimalController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(Guid id)
         {
-            return View();
+            var animal = _animalRepository.GetAnimalById(id);
+            return View("Delete", animal);
         }
 
         // POST: AnimalController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(Guid id, IFormCollection collection)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var animal = _animalRepository.GetAnimalById(id);
+                _animalRepository.DeleteAnimal(animal);
+                return RedirectToAction("Index");
             }
             catch
             {
-                return View();
+                return View("Delete", id);
             }
         }
         private void PopulateOwnersDropdown()
