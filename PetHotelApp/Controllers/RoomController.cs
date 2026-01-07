@@ -59,44 +59,60 @@ namespace PetHotelApp.Controllers
         }
 
         // GET: RoomController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(Guid id)
         {
-            return View();
+            var room = _repository.GetRoomById(id);
+            return View("Edit",room);
         }
 
         // POST: RoomController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Guid id, IFormCollection collection)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var room = _repository.GetRoomById(id);
+                var task = TryUpdateModelAsync(room);
+                task.Wait();
+                if (task.Result) 
+                {
+                    _repository.UpdateRoom(room);
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return RedirectToAction("Index",id);
+                }
+                
             }
             catch
             {
-                return View();
+                return View("Index",id);
             }
         }
 
         // GET: RoomController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(Guid id)
         {
-            return View();
+            var room = _repository.GetRoomById(id);
+            return View("Delete",room);
         }
 
         // POST: RoomController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(Guid id, IFormCollection collection)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var room = _repository.GetRoomById(id);
+                _repository.DeleteRoom(room);
+                return RedirectToAction("Index");
             }
             catch
             {
-                return View();
+                return View("Delete",id);
             }
         }
     }
