@@ -23,7 +23,7 @@ namespace PetHotelApp.Models
         [StringLength(255)]
         public string? Photo { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
     }

@@ -59,44 +59,60 @@ namespace PetHotelApp.Controllers
         }
 
         // GET: RoomAllocationController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(Guid id)
         {
-            return View();
+            var allocation = _repository.GetRoomAllocatonById(id);
+            return View("Edit", allocation);
         }
 
         // POST: RoomAllocationController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Guid id, IFormCollection collection)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var allocation = _repository.GetRoomAllocatonById(id);
+                var task = TryUpdateModelAsync(allocation);
+                task.Wait();
+                if (task.Result)
+                {
+                    _repository.UpdateRoomAllocation(allocation);
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return RedirectToAction("Index",id);
+                }
+                
             }
             catch
             {
-                return View();
+                return RedirectToAction("Index",id);
             }
         }
 
         // GET: RoomAllocationController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(Guid id)
         {
-            return View();
+            var allocation = _repository.GetRoomAllocatonById(id);
+            return View("Delete",allocation);
         }
 
         // POST: RoomAllocationController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(Guid id, IFormCollection collection)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var allocation = _repository.GetRoomAllocatonById(id);
+                _repository.DeleteAllocation(allocation);
+                return RedirectToAction("Index");
             }
             catch
             {
-                return View();
+                return RedirectToAction("Delete",id);
             }
         }
     }

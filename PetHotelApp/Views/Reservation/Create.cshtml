@@ -15,7 +15,9 @@
 
             <div class="form-group">
                 <label asp-for="IdAnimal" class="control-label"></label>
-                <input asp-for="IdAnimal" class="form-control" />
+                <select asp-for="IdAnimal" class="form-control" asp-items="ViewBag.AnimalList">
+                    <option value="">-- Select Pet --</option>
+                </select>
                 <span asp-validation-for="IdAnimal" class="text-danger"></span>
             </div>
             <div class="form-group">

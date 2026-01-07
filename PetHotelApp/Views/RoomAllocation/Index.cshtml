@@ -43,9 +43,9 @@
                 @Html.DisplayFor(modelItem => item.CheckOutDate)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Edit", "Edit", new { id = item.IdAllocation }) |
+                @Html.ActionLink("Details", "Details", new { id = item.IdAllocation }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.IdAllocation })
             </td>
         </tr>
 }
