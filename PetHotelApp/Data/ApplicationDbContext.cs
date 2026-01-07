@@ -223,6 +223,7 @@ namespace PetHotelApp.Data
                     .HasColumnName("startDate");
 
                 entity.Property(e => e.Status)
+                    .HasConversion<string>()
                     .HasMaxLength(20)
                     .IsUnicode(false)
                     .HasColumnName("status");
