@@ -19,13 +19,15 @@ namespace PetHotelApp.Controllers
         // GET: RoomAllocationController
         public ActionResult Index()
         {
-            return View();
+            var allocations = _repository.GetAllAllocations();
+            return View("Index", allocations);
         }
 
         // GET: RoomAllocationController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(Guid id)
         {
-            return View();
+            var allocation = _repository.GetRoomAllocatonById(id);
+            return View("Details",allocation);
         }
 
         // GET: RoomAllocationController/Create
