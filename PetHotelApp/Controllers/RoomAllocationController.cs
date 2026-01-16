@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.IdentityModel.Tokens;
 using PetHotelApp.Data;
 using PetHotelApp.Models;
@@ -10,10 +11,14 @@ namespace PetHotelApp.Controllers
     public class RoomAllocationController : Controller
     {
         private RoomAllocationRepository _repository;
+        private RoomRepository _roomRepository;
+        private AnimalRepository _animalRepository;
 
         public RoomAllocationController(ApplicationDbContext dbContext)
         {
             _repository = new RoomAllocationRepository(dbContext);
+            _roomRepository = new RoomRepository(dbContext);
+            _animalRepository = new AnimalRepository(dbContext);
         }
 
         // GET: RoomAllocationController
@@ -33,6 +38,8 @@ namespace PetHotelApp.Controllers
         // GET: RoomAllocationController/Create
         public ActionResult Create()
         {
+            PopulateAnimalsDropdown();
+            PopulateRoomsDropdown();    
             return View("Create");
         }
 
@@ -43,6 +50,7 @@ namespace PetHotelApp.Controllers
         {
             try
             {
+
                 RoomAllocationModel allocation = new RoomAllocationModel();
                 var task = TryUpdateModelAsync(allocation);
                 task.Wait();
@@ -50,10 +58,14 @@ namespace PetHotelApp.Controllers
                 {
                     _repository.CreateRoomAllocation(allocation);
                 }
+                PopulateAnimalsDropdown();
+                PopulateRoomsDropdown();
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
+                PopulateAnimalsDropdown();
+                PopulateRoomsDropdown();
                 return View("Create");
             }
         }
@@ -114,6 +126,29 @@ namespace PetHotelApp.Controllers
             {
                 return RedirectToAction("Delete",id);
             }
+        }
+
+        private void PopulateAnimalsDropdown()
+        {
+            var animals = _animalRepository.GetAllAnimals()
+                                         .Select(a => new { a.IdAnimal, a.Name, a.DateOfBirth })
+                                         .ToList();
+
+            ViewBag.AnimalList = new SelectList(animals, "IdAnimal", "Name", "DateOfBirth");
+        }
+        private void PopulateRoomsDropdown()
+        {
+            var animals = _roomRepository.GetAllRooms()
+                                         .Select(r => new { r.IdRoom,
+                                             DisplayText =
+                                            $"Room #{r.IdRoom.ToString().Substring(0, 6)} | " +
+                                            $"{r.RoomType} | " +
+                                            $"Capacity: {r.Capacity} | " +
+                                            $"{r.PricePerDay} ron/day"
+                                         })
+                                         .ToList();
+
+            ViewBag.RoomList = new SelectList(animals, "IdRoom", "DisplayText");
         }
     }
 }

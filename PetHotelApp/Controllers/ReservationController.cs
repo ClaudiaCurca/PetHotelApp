@@ -69,6 +69,9 @@ namespace PetHotelApp.Controllers
         public ActionResult Edit(Guid id)
         {
             var reservation = _repository.GetReservationById(id);
+            ViewBag.StatusList = Enum.GetValues(typeof(ReservationStatus))
+                .Cast<ReservationStatus>()
+                .ToList();
             return View("Edit", reservation);
         }
 
@@ -89,13 +92,19 @@ namespace PetHotelApp.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("Index", reservation);
+                    ViewBag.StatusList = Enum.GetValues(typeof(ReservationStatus))
+                             .Cast<ReservationStatus>()
+                             .ToList();
+                    return View("Edit", reservation);
                 }
 
             }
             catch
             {
-                return View("Index", id);
+                ViewBag.StatusList = Enum.GetValues(typeof(ReservationStatus))
+                                 .Cast<ReservationStatus>()
+                                 .ToList();
+                return View("Edit", _repository.GetReservationById(id));
             }
         }
 
@@ -126,10 +135,10 @@ namespace PetHotelApp.Controllers
         private void PopulateAnimalsDropdown()
         {
             var animals = _animalRepository.GetAllAnimals()
-                                         .Select(a => new { a.IdAnimal,a.Name,a.DateOfBirth })
+                                         .Select(a => new { a.IdAnimal, a.Name, a.DateOfBirth })
                                          .ToList();
 
-            ViewBag.AnimalList = new SelectList(animals, "IdAnimal", "Name","DateOfBirth");
+            ViewBag.AnimalList = new SelectList(animals, "IdAnimal", "Name", "DateOfBirth");
         }
     }
 }
