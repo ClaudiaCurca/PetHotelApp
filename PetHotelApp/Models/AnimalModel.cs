@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.ComponentModel.DataAnnotations;
 
 namespace PetHotelApp.Models
 {
@@ -7,7 +8,7 @@ namespace PetHotelApp.Models
         [Key]
         public Guid IdAnimal { get; set; }
 
-        [Required(ErrorMessage = "Owner Id is required")]
+        
         public Guid IdOwner { get; set; }
 
         [Required(ErrorMessage = "Name is required")]
@@ -26,5 +27,8 @@ namespace PetHotelApp.Models
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
+
+        [BindNever]
+        public OwnerModel? Owner { get; set; }
     }
 }

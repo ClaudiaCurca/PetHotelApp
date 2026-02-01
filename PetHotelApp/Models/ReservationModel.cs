@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PetHotelApp.Models
@@ -21,5 +23,8 @@ namespace PetHotelApp.Models
 
         [Column(TypeName = "nvarchar(20)")]
         public ReservationStatus? Status { get; set; } = ReservationStatus.Pending;
+
+        [BindNever]
+        public AnimalModel? Animal { get; set; }
     }
 }

@@ -78,7 +78,7 @@ namespace PetHotelApp.Data
                     .IsUnicode(false)
                     .HasColumnName("photo");
 
-                entity.HasOne(d => d.IdOwnerNavigation)
+                entity.HasOne(d => d.Owner)
                     .WithMany(p => p.Animals)
                     .HasForeignKey(d => d.IdOwner)
                     .OnDelete(DeleteBehavior.ClientSetNull)
@@ -231,7 +231,7 @@ namespace PetHotelApp.Data
                     .IsUnicode(false)
                     .HasColumnName("status");
 
-                entity.HasOne(d => d.IdAnimalNavigation)
+                entity.HasOne(d => d.Animal)
                     .WithMany(p => p.Reservations)
                     .HasForeignKey(d => d.IdAnimal)
                     .OnDelete(DeleteBehavior.ClientSetNull)

@@ -1,4 +1,5 @@
-﻿using PetHotelApp.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using PetHotelApp.Data;
 using PetHotelApp.Models;
 using PetHotelApp.Models.DBObjects;
 
@@ -18,12 +19,12 @@ namespace PetHotelApp.Repository
 
         public List<ReservationModel> GetAllReservations()
         {
-            List<ReservationModel> reservationModelsList = new List<ReservationModel>();
-            foreach (Reservation r in dbContext.Reservations)
-            {
-                reservationModelsList.Add(MapDbObjectToModel(r));
-            }
-            return reservationModelsList;
+            var reservations = dbContext.Reservations
+                .Include(r => r.Animal)        
+                .ThenInclude(a => a.Owner)     
+                .ToList();
+
+            return reservations.Select(r => MapDbObjectToModel(r)).ToList();
         }
 
         public ReservationModel GetReservationById(Guid id)
@@ -117,6 +118,22 @@ namespace PetHotelApp.Repository
                 model.StartDate = dbReservation.StartDate;
                 model.EndDate = dbReservation.EndDate;
                 model.Status = dbReservation.Status;
+                if (dbReservation.Animal != null)
+                {
+                    model.Animal = new AnimalModel
+                    {
+                        IdAnimal = dbReservation.Animal.IdAnimal,
+                        Name = dbReservation.Animal.Name,
+                        IdOwner = dbReservation.Animal.IdOwner,
+                        Breed = dbReservation.Animal.Breed,
+
+                        Owner = new OwnerModel
+                        {
+                            IdOwner = dbReservation.Animal.Owner.IdOwner,
+                            Email = dbReservation.Animal.Owner.Email
+                        }
+                    };
+                }
             }
             return model;
         }

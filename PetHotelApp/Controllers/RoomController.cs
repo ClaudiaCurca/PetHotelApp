@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PetHotelApp.Data;
 using PetHotelApp.Models;
@@ -28,7 +29,7 @@ namespace PetHotelApp.Controllers
             var room = _repository.GetRoomById(id);
             return View("Details", room);
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: RoomController/Create
         public ActionResult Create()
         {
@@ -38,6 +39,7 @@ namespace PetHotelApp.Controllers
         // POST: RoomController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult Create(IFormCollection collection)
         {
             try
@@ -59,6 +61,7 @@ namespace PetHotelApp.Controllers
         }
 
         // GET: RoomController/Edit/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit(Guid id)
         {
             var room = _repository.GetRoomById(id);
@@ -68,6 +71,7 @@ namespace PetHotelApp.Controllers
         // POST: RoomController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit(Guid id, IFormCollection collection)
         {
             try
@@ -93,6 +97,7 @@ namespace PetHotelApp.Controllers
         }
 
         // GET: RoomController/Delete/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(Guid id)
         {
             var room = _repository.GetRoomById(id);
@@ -102,6 +107,7 @@ namespace PetHotelApp.Controllers
         // POST: RoomController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(Guid id, IFormCollection collection)
         {
             try

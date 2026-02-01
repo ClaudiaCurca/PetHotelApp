@@ -27,12 +27,19 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Animal" asp-action="Index">Animals</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Animal" asp-action="Index">Pets</a>
                         </li>
 
+                        @if (User.IsInRole("Admin")){
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Owner" asp-action="Index">Owners</a>
                         </li>
+                        }
+                        else{
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Owner" asp-action="Index">Personal Info</a>
+                        </li>
+                        }
 
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Reservation" asp-action="Index">Reservations</a>
@@ -42,9 +49,12 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Room" asp-action="Index">Rooms</a>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="RoomAllocation" asp-action="Index">Room Allocations</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="RoomAllocation" asp-action="Index">Room Allocations</a>
                         </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

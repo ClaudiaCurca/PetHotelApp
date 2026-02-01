@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PetHotelApp.Models.DBObjects
 {
@@ -11,6 +12,7 @@ namespace PetHotelApp.Models.DBObjects
         public DateTime EndDate { get; set; }
         public ReservationStatus? Status { get; set; } = ReservationStatus.Pending;
 
-        public virtual Animal IdAnimalNavigation { get; set; } = null!;
+        [ForeignKey("IdAnimal")]
+        public Animal Animal { get; set; } = null!;
     }
 }

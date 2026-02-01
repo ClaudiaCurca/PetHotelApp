@@ -1,71 +1,63 @@
 ﻿@model IEnumerable<PetHotelApp.Models.AnimalModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Pets";
 }
 
-<h1>Index</h1>
+<h1 class="mb-4">Pets</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.IdAnimal)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdOwner)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Breed)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Notes)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Photo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateOfBirth)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdAnimal)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdOwner)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Breed)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Notes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Photo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateOfBirth)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.IdAnimal }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.IdAnimal }) |
-                    @Html.ActionLink("Delete", "Delete", new {  id = item.IdAnimal })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 col-lg-3 mb-4">
+            <div class="card h-100 shadow-sm">
+
+                <img src="@item.Photo"
+                     class="card-img-top"
+                     alt="Pet photo"
+                     style="height: 200px; object-fit: cover;"
+                     onerror="this.src='/images/no-pet.png'" />
+
+                <div class="card-body">
+                    <h5 class="card-title">@item.Name</h5>
+
+                    <p class="card-text">
+                        <strong>Breed:</strong> @item.Breed <br />
+                        <strong>Born:</strong> @item.DateOfBirth.ToShortDateString()
+                    </p>
+
+                    @if (!string.IsNullOrEmpty(item.Notes))
+                    {
+                        <p class="card-text text-muted">
+                            @item.Notes
+                        </p>
+                    }
+                </div>
+
+                <div class="card-footer text-center bg-white">
+                    <a asp-action="Edit"
+                       asp-route-id="@item.IdAnimal"
+                       class="btn btn-sm btn-outline-warning">
+                        Edit
+                    </a>
+
+                    <a asp-action="Details"
+                       asp-route-id="@item.IdAnimal"
+                       class="btn btn-sm btn-outline-info">
+                        Details
+                    </a>
+
+                    <a asp-action="Delete"
+                       asp-route-id="@item.IdAnimal"
+                       class="btn btn-sm btn-outline-danger">
+                        Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

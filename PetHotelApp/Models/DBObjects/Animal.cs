@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PetHotelApp.Models.DBObjects
 {
@@ -18,9 +19,12 @@ namespace PetHotelApp.Models.DBObjects
         public string? Notes { get; set; }
         public string? Photo { get; set; }
         public DateTime DateOfBirth { get; set; }
+        [ForeignKey("IdOwner")]
+        public Owner Owner { get; set; } = null!;
 
-        public virtual Owner IdOwnerNavigation { get; set; } = null!;
         public virtual ICollection<Reservation> Reservations { get; set; }
         public virtual ICollection<RoomAllocation> RoomAllocations { get; set; }
+
+
     }
 }

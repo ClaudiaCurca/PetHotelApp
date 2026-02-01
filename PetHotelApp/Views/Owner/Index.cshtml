@@ -3,12 +3,15 @@
 @{
     ViewData["Title"] = "Index";
 }
+@if (User.IsInRole("Admin"))
+{
+    <h1>Owners</h1>
+}
+else
+{
+    <h1>My Info</h1>
+}
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -24,30 +27,31 @@
             <th>
                 @Html.DisplayNameFor(model => model.Email)
             </th>
-            <th></th>
+            
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.IdOwner }) |
-                @Html.ActionLink("Details", "Details", new { id = item.IdOwner }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.IdOwner })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model) 
+        {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.IdOwner }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.IdOwner }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.IdOwner })
+                    </td>
+                </tr>
+        }
     </tbody>
 </table>

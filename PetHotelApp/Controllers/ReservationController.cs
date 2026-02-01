@@ -1,27 +1,46 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PetHotelApp.Data;
 using PetHotelApp.Models;
+using PetHotelApp.Models.DBObjects;
 using PetHotelApp.Repository;
 
 namespace PetHotelApp.Controllers
 {
+    [Authorize]
     public class ReservationController : Controller
     {
         private ReservationRepository _repository;
         private AnimalRepository _animalRepository;
+        private OwnerRepository _ownerRepository;
 
         public ReservationController(ApplicationDbContext dbContext)
         {
             _repository = new ReservationRepository(dbContext);
             _animalRepository = new AnimalRepository(dbContext);
+            _ownerRepository = new OwnerRepository(dbContext);
         }
 
         // GET: ReservationController
         public ActionResult Index()
         {
+            
             var reservations = _repository.GetAllReservations();
+
+            if (User.IsInRole("User"))
+            {
+                var userEmail = User.Identity.Name;
+
+                reservations = reservations
+                    .Where(r => r.Animal != null
+                                && r.Animal.Owner != null
+                                && r.Animal.Owner.Email != null
+                                && r.Animal.Owner.Email.Equals(userEmail, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
             return View("Index", reservations);
         }
 
@@ -33,6 +52,7 @@ namespace PetHotelApp.Controllers
         }
 
         // GET: ReservationController/Create
+        [Authorize(Roles = "User,Admin")]
         public ActionResult Create()
         {
             PopulateAnimalsDropdown();
@@ -42,26 +62,38 @@ namespace PetHotelApp.Controllers
         // POST: ReservationController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "User,Admin")]
         public ActionResult Create(IFormCollection collection)
         {
             try
             {
                 ReservationModel model = new ReservationModel();
-
-                if (TryUpdateModelAsync(model).Result)
+                if (!TryUpdateModelAsync(model).Result)
                 {
-                    _repository.CreateReservation(model);
-                    return RedirectToAction(nameof(Index));
+                    PopulateAnimalsDropdown();
+                    return View(model);
                 }
 
-                PopulateAnimalsDropdown();
-                return View(model);
+                if (!User.IsInRole("Admin"))
+                {
+                    var animal = _animalRepository.GetAnimalById(model.IdAnimal);
+                    var owner = _ownerRepository.GetOwnerById(animal.IdOwner);
+
+                    if (owner.Email != User.Identity.Name)
+                    {
+                        ModelState.AddModelError("", "You can only reserve your own animals.");
+                        PopulateAnimalsDropdown();
+                        return View(model);
+                    }
+                }
+
+                _repository.CreateReservation(model);
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
                 PopulateAnimalsDropdown();
-
-                return View();
+                return View("Create");
             }
         }
 
@@ -134,11 +166,32 @@ namespace PetHotelApp.Controllers
 
         private void PopulateAnimalsDropdown()
         {
-            var animals = _animalRepository.GetAllAnimals()
-                                         .Select(a => new { a.IdAnimal, a.Name, a.DateOfBirth })
-                                         .ToList();
+            List<AnimalModel> animals;
 
-            ViewBag.AnimalList = new SelectList(animals, "IdAnimal", "Name", "DateOfBirth");
+            if (User.IsInRole("Admin"))
+            {
+                animals = _animalRepository.GetAllAnimals();
+            }
+            else
+            {
+                var userEmail = User.Identity.Name;
+
+                var owner = _ownerRepository.GetAllOwners()
+                                .FirstOrDefault(o => o.Email == userEmail);
+
+                if (owner != null)
+                {
+                    animals = _animalRepository.GetAllAnimals()
+                                .Where(a => a.IdOwner == owner.IdOwner)
+                                .ToList();
+                }
+                else
+                {
+                    animals = new List<AnimalModel>();
+                }
+            }
+
+            ViewBag.AnimalList = new SelectList(animals, "IdAnimal", "Name");
         }
     }
 }

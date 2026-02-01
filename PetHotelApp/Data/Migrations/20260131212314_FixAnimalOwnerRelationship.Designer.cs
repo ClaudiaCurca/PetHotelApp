@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PetHotelApp.Data;
 
@@ -11,9 +12,10 @@ using PetHotelApp.Data;
 namespace PetHotelApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260131212314_FixAnimalOwnerRelationship")]
+    partial class FixAnimalOwnerRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -244,6 +246,9 @@ namespace PetHotelApp.Data.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("idOwner");
 
+                    b.Property<Guid>("IdOwnerNavigationIdOwner")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -266,6 +271,8 @@ namespace PetHotelApp.Data.Migrations
                     b.HasKey("IdAnimal");
 
                     b.HasIndex("IdOwner");
+
+                    b.HasIndex("IdOwnerNavigationIdOwner");
 
                     b.ToTable("Animal", (string)null);
                 });
@@ -453,6 +460,14 @@ namespace PetHotelApp.Data.Migrations
                         .HasForeignKey("IdOwner")
                         .IsRequired()
                         .HasConstraintName("FK_Animal_Owner");
+
+                    b.HasOne("PetHotelApp.Models.DBObjects.Owner", "IdOwnerNavigation")
+                        .WithMany()
+                        .HasForeignKey("IdOwnerNavigationIdOwner")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IdOwnerNavigation");
 
                     b.Navigation("Owner");
                 });

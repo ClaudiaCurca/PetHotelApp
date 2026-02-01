@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PetHotelApp.Data;
 using PetHotelApp.Models;
 using PetHotelApp.Repository;
 
+
 namespace PetHotelApp.Controllers
 {
+    [Authorize]
     public class OwnerController : Controller
     {
         private OwnerRepository _repository;
@@ -14,10 +17,21 @@ namespace PetHotelApp.Controllers
         {
             _repository = new OwnerRepository(dbContext);
         }
+
         // GET: OwnerController
         public ActionResult Index()
         {
             var owners = _repository.GetAllOwners();
+            if (User.IsInRole("User")) 
+            {
+                var userEmail = User.Identity.Name;
+                owners = owners.Where(o => o.Email.Equals(userEmail, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            else
+            {
+                owners = owners.ToList(); 
+            }
+
             return View("Index",owners);
         }
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.IdentityModel.Tokens;
@@ -8,6 +9,7 @@ using PetHotelApp.Repository;
 
 namespace PetHotelApp.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class RoomAllocationController : Controller
     {
         private RoomAllocationRepository _repository;

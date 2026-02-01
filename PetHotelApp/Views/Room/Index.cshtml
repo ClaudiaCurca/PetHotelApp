@@ -4,10 +4,13 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Rooms</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Create">Create New</a>
+    }
 </p>
 <table class="table">
     <thead>
@@ -36,11 +39,14 @@
             <td>
                 @Html.DisplayFor(modelItem => item.RoomType)
             </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.IdRoom }) |
-                @Html.ActionLink("Details", "Details", new { id = item.IdRoom }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.IdRoom })
-            </td>
+                <td>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.IdRoom">Edit</a>
+                        <a asp-action = "Delete" asp-route-id = "@item.IdRoom" >Delete</a > 
+                    }
+                    <a asp-action="Details" asp-route-id="@item.IdRoom">Details</a>
+                </td>
         </tr>
 }
     </tbody>
