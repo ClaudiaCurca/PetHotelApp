@@ -9,11 +9,11 @@ using PetHotelApp.Data;
 
 #nullable disable
 
-namespace PetHotelApp.Data.Migrations
+namespace PetHotelApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260131212709_FixAnimalOwnerFK")]
-    partial class FixAnimalOwnerFK
+    [Migration("20260202170101_InitialMig")]
+    partial class InitialMig
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

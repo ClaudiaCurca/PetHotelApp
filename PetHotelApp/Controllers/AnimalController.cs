@@ -55,56 +55,32 @@ namespace PetHotelApp.Controllers
         }
 
         // GET: AnimalController/Create
+        [Authorize(Roles = "User")]
         public ActionResult Create()
         {
-            if (User.IsInRole("Admin"))
-            {
-                PopulateAnimalsDropdown();
-            }
             return View("Create");
         }
 
         // POST: AnimalController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "User,Admin")]
-        public ActionResult Create(ReservationModel model)
+        [Authorize(Roles = "User")]
+        public ActionResult Create(AnimalModel model)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                if (!User.IsInRole("Admin"))
-                {
-                    var animal = _animalRepository.GetAnimalById(model.IdAnimal);
-                    if (animal == null)
-                    {
-                        ModelState.AddModelError("", "Selected animal not found.");
-                        PopulateAnimalsDropdown();
-                        return View(model);
-                    }
-
-                    var owner = _ownerRepository.GetOwnerById(animal.IdOwner);
-                    if (owner.Email != User.Identity.Name)
-                    {
-                        ModelState.AddModelError("", "You can only reserve your own animals.");
-                        PopulateAnimalsDropdown();
-                        return View(model);
-                    }
-                }
-
-                if (!ModelState.IsValid)
-                {
-                    PopulateAnimalsDropdown();
-                    return View(model);
-                }
-
-                _reservationRepository.CreateReservation(model);
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                PopulateAnimalsDropdown();
                 return View(model);
             }
+
+            if (!User.IsInRole("Admin"))
+            {
+                var owner = _ownerRepository.GetAllOwners()
+                             .FirstOrDefault(o => o.Email == User.Identity.Name);
+                model.IdOwner = owner.IdOwner;
+            }
+
+            _animalRepository.CreateAnimal(model);
+            return RedirectToAction("Index");
         }
 
         // GET: AnimalController/Edit/5
@@ -163,24 +139,6 @@ namespace PetHotelApp.Controllers
             {
                 return View("Delete", id);
             }
-        }
-        private void PopulateAnimalsDropdown()
-        {
-            IEnumerable<AnimalModel> animals;
-
-            if (User.IsInRole("Admin"))
-            {
-                animals = _animalRepository.GetAllAnimals();
-            }
-            else
-            {
-                var userEmail = User.Identity?.Name;
-
-                animals = _animalRepository.GetAllAnimals()
-                    .Where(a => a.Owner.Email.Equals(userEmail, StringComparison.OrdinalIgnoreCase));
-            }
-
-            ViewBag.Animals = new SelectList(animals, "IdAnimal", "Name");
         }
 
     }

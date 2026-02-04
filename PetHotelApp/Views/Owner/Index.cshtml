@@ -12,6 +12,13 @@ else
     <h1>My Info</h1>
 }
 
+@if (ViewBag.CanCreateOwner == true && !User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Create New</a>
+    </p>
+}
+
 <table class="table">
     <thead>
         <tr>

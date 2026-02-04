@@ -17,11 +17,28 @@
             @Html.HiddenFor(model => model.IdReservation)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdAnimal)
+            @Html.DisplayNameFor(model => model.Animal.Name)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdAnimal)
+            @Html.DisplayFor(model => model.Animal.Name)
         </dd>
+
+        @if (User.IsInRole("Admin"))
+        {
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Animal.Owner.LastName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Animal.Owner.LastName)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Animal.Owner.FirstName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Animal.Owner.FirstName)
+        </dd>
+        }
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.StartDate)
         </dt>

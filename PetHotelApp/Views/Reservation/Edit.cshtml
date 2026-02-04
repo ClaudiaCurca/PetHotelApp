@@ -12,10 +12,12 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdReservation" />
+            <input type="hidden" asp-for="IdAnimal" />
             <div class="form-group">
-                <label asp-for="IdAnimal" class="control-label"></label>
-                <input asp-for="IdAnimal" class="form-control" />
-                <span asp-validation-for="IdAnimal" class="text-danger"></span>
+                <label>Pet</label>
+                <input class="form-control" value="@Model.Animal?.Name" readonly />
+                <input type="hidden" asp-for="IdAnimal" />
             </div>
             <div class="form-group">
                 <label asp-for="StartDate" class="control-label"></label>
@@ -27,16 +29,28 @@
                 <input asp-for="EndDate" class="form-control" />
                 <span asp-validation-for="EndDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="form-group">
+                    <label asp-for="Status" class="control-label"></label>
 
-                <select asp-for="Status"
-                        class="form-control"
-                        asp-items="Html.GetEnumSelectList<ReservationStatus>()">
-                </select>
+                    <select asp-for="Status"
+                            class="form-control"
+                            asp-items="Html.GetEnumSelectList<ReservationStatus>()">
+                    </select>
 
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
+                    <span asp-validation-for="Status" class="text-danger"></span>
+
+                </div>
+            }
+            else
+            {
+                <div class="form-group">
+                    <label>Status</label>
+                    <input class="form-control" value="@Model.Status" readonly />
+                    <input type="hidden" asp-for="IdReservation" />
+                </div>
+            }
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

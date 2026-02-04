@@ -25,6 +25,6 @@ namespace PetHotelApp.Models
         public ReservationStatus? Status { get; set; } = ReservationStatus.Pending;
 
         [BindNever]
-        public AnimalModel? Animal { get; set; }
+        public AnimalModel Animal { get; set; } = new AnimalModel();
     }
 }

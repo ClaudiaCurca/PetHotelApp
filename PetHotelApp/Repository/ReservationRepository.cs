@@ -20,8 +20,8 @@ namespace PetHotelApp.Repository
         public List<ReservationModel> GetAllReservations()
         {
             var reservations = dbContext.Reservations
-                .Include(r => r.Animal)        
-                .ThenInclude(a => a.Owner)     
+                .Include(r => r.Animal)
+                .ThenInclude(a => a.Owner)
                 .ToList();
 
             return reservations.Select(r => MapDbObjectToModel(r)).ToList();
@@ -29,8 +29,12 @@ namespace PetHotelApp.Repository
 
         public ReservationModel GetReservationById(Guid id)
         {
-            ReservationModel model = MapDbObjectToModel(dbContext.Reservations.FirstOrDefault(x => x.IdReservation == id));
-            return model;
+            var reservation = dbContext.Reservations
+              .Include(r => r.Animal)
+              .ThenInclude(a => a.Owner)
+              .FirstOrDefault(r => r.IdReservation == id);
+
+            return MapDbObjectToModel(reservation);
         }
         public List<ReservationModel> GetReservationByAnimalId(Guid idAnimal)
         {
@@ -46,8 +50,8 @@ namespace PetHotelApp.Repository
             List<ReservationModel> reservationList = new List<ReservationModel>();
             foreach (var r in dbContext.Reservations)
             {
-               
-                if (r.Status == status) 
+
+                if (r.Status == status)
                 {
                     reservationList.Add(MapDbObjectToModel(r));
                 }
@@ -130,11 +134,16 @@ namespace PetHotelApp.Repository
                         Owner = new OwnerModel
                         {
                             IdOwner = dbReservation.Animal.Owner.IdOwner,
+                            FirstName = dbReservation.Animal.Owner.FirstName,
+                            LastName = dbReservation.Animal.Owner.LastName,
                             Email = dbReservation.Animal.Owner.Email
                         }
                     };
+
+
                 }
             }
+
             return model;
         }
     }

@@ -5,10 +5,12 @@
 }
 
 <h1 class="mb-4">Pets</h1>
-
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
-</p>
+@if (User.IsInRole("User"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Create New</a>
+    </p>
+}
 
 <div class="row">
     @foreach (var item in Model)

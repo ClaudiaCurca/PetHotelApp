@@ -8,7 +8,7 @@ using PetHotelApp.Data;
 
 #nullable disable
 
-namespace PetHotelApp.Data.Migrations
+namespace PetHotelApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot

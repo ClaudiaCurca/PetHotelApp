@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PetHotelApp.Data;
 using PetHotelApp.Models;
 using PetHotelApp.Repository;
+using System.Security.Claims;
 
 
 namespace PetHotelApp.Controllers
@@ -21,18 +22,24 @@ namespace PetHotelApp.Controllers
         // GET: OwnerController
         public ActionResult Index()
         {
-            var owners = _repository.GetAllOwners();
-            if (User.IsInRole("User")) 
+            var owners = _repository.GetAllOwners().ToList();
+
+            bool canCreateOwner = true;
+
+            if (User.IsInRole("User"))
             {
-                var userEmail = User.Identity.Name;
-                owners = owners.Where(o => o.Email.Equals(userEmail, StringComparison.OrdinalIgnoreCase)).ToList();
-            }
-            else
-            {
-                owners = owners.ToList(); 
+                var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+
+                owners = owners
+                    .Where(o => o.Email.Equals(userEmail))
+                    .ToList();
+
+                canCreateOwner = !owners.Any();
             }
 
-            return View("Index",owners);
+            ViewBag.CanCreateOwner = canCreateOwner;
+
+            return View("Index", owners);
         }
 
         // GET: OwnerController/Details/5
@@ -45,6 +52,19 @@ namespace PetHotelApp.Controllers
         // GET: OwnerController/Create
         public ActionResult Create()
         {
+            if (User.IsInRole("User"))
+            {
+                var email = User.Identity!.Name;
+                var alreadyExists = _repository
+                    .GetAllOwners()
+                    .Any(o => o.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+
+                if (alreadyExists)
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+
             return View("Create");
         }
 
@@ -53,22 +73,31 @@ namespace PetHotelApp.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
         {
-            try
+            if (User.IsInRole("User"))
             {
-                OwnerModel owner = new OwnerModel();
-                var task = TryUpdateModelAsync(owner);
-                task.Wait();
-                if (task.Result)
+                var email = User.Identity!.Name;
+                var alreadyExists = _repository
+                    .GetAllOwners()
+                    .Any(o => o.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+
+                if (alreadyExists)
                 {
-                    _repository.CreateOwner(owner);
+                    return RedirectToAction("Index");
                 }
-                return RedirectToAction(nameof(Index));
             }
-            catch
+
+            OwnerModel owner = new OwnerModel();
+            var task = TryUpdateModelAsync(owner);
+            task.Wait();
+
+            if (task.Result)
             {
-                return View("Create");
+                _repository.CreateOwner(owner);
             }
+
+            return RedirectToAction(nameof(Index));
         }
+    
 
         // GET: OwnerController/Edit/5
         public ActionResult Edit(Guid id)

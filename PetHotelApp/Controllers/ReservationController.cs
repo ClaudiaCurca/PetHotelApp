@@ -110,34 +110,51 @@ namespace PetHotelApp.Controllers
         // POST: ReservationController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Guid id, IFormCollection collection)
+        public ActionResult Edit(ReservationModel model)
         {
-            try
-            {
-                var reservation = _repository.GetReservationById(id);
-                var task = TryUpdateModelAsync(reservation);
-                task.Wait();
-                if (task.Result)
-                {
-                    _repository.UpdateReservation(reservation);
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    ViewBag.StatusList = Enum.GetValues(typeof(ReservationStatus))
-                             .Cast<ReservationStatus>()
-                             .ToList();
-                    return View("Edit", reservation);
-                }
-
-            }
-            catch
+            // Validation
+            if (!ModelState.IsValid)
             {
                 ViewBag.StatusList = Enum.GetValues(typeof(ReservationStatus))
-                                 .Cast<ReservationStatus>()
-                                 .ToList();
-                return View("Edit", _repository.GetReservationById(id));
+                    .Cast<ReservationStatus>()
+                    .ToList();
+                return View(model);
             }
+
+            // Admin can edit anything
+            if (!User.IsInRole("Admin"))
+            {
+                var userEmail = User.Identity.Name;
+
+                // Get the reservation from the DB with Animal
+                var reservationFromDb = _repository.GetReservationById(model.IdReservation);
+
+                // Check nulls
+                if (reservationFromDb == null || reservationFromDb.Animal == null)
+                {
+                    ModelState.AddModelError("", "Reservation not found.");
+                    ViewBag.StatusList = Enum.GetValues(typeof(ReservationStatus))
+                        .Cast<ReservationStatus>()
+                        .ToList();
+                    return View(model);
+                }
+
+                // Check ownership
+                if (reservationFromDb.Animal.IdOwner != _ownerRepository.GetAllOwners()
+                                                  .First(o => o.Email == userEmail).IdOwner)
+                {
+                    ModelState.AddModelError("", "You cannot edit this reservation.");
+                    ViewBag.StatusList = Enum.GetValues(typeof(ReservationStatus))
+                        .Cast<ReservationStatus>()
+                        .ToList();
+                    return View(model);
+                }
+            }
+
+            // Everything ok, update reservation
+            _repository.UpdateReservation(model);
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: ReservationController/Delete/5

@@ -15,5 +15,6 @@ namespace PetHotelApp.Models
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         [DataType(DataType.Date)]
         public DateTime CheckOutDate { get; set; }
+
     }
 }
