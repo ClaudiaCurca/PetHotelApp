@@ -86,6 +86,8 @@ namespace PetHotelApp.Repository
                 existingReservation.StartDate = reservationModel.StartDate;
                 existingReservation.EndDate = reservationModel.EndDate;
                 existingReservation.Status = reservationModel.Status;
+
+                existingReservation.IdAnimal = reservationModel.IdAnimal;
                 dbContext.SaveChanges();
             }
         }

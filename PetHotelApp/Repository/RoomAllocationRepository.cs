@@ -1,4 +1,5 @@
-﻿using PetHotelApp.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using PetHotelApp.Data;
 using PetHotelApp.Models;
 using PetHotelApp.Models.DBObjects;
 
@@ -19,7 +20,12 @@ namespace PetHotelApp.Repository
         {
             List<RoomAllocationModel> roomAllocationsList = new List<RoomAllocationModel>();
 
-            foreach (RoomAllocation r in dbContext.RoomAllocations)
+            var allocations = dbContext.RoomAllocations
+                              .Include(r => r.IdAnimalNavigation)
+                              .Include(r => r.IdRoomNavigation)   
+                              .ToList();
+
+            foreach (var r in allocations)
             {
                 roomAllocationsList.Add(MapDbObjectToModel(r));
             }
@@ -28,9 +34,12 @@ namespace PetHotelApp.Repository
         }
         public RoomAllocationModel GetRoomAllocatonById(Guid id)
         {
-            RoomAllocationModel roomAllocationModel = new RoomAllocationModel();
-            roomAllocationModel = MapDbObjectToModel(dbContext.RoomAllocations.FirstOrDefault(x => x.IdAllocation == id));
-            return roomAllocationModel;
+            var allocation = dbContext.RoomAllocations
+                                        .Include(r => r.IdAnimalNavigation)
+                                        .Include(r => r.IdRoomNavigation)
+                                        .FirstOrDefault(x => x.IdAllocation == id);
+
+            return MapDbObjectToModel(allocation);
 
         }
         public List<RoomAllocationModel> GetRoomAllocatonByIdRoom(Guid roomId)
@@ -116,6 +125,10 @@ namespace PetHotelApp.Repository
                 roomAllocationModel.IdRoom = roomAllocation.IdRoom;
                 roomAllocationModel.CheckInDate = roomAllocation.CheckInDate;
                 roomAllocationModel.CheckOutDate = roomAllocation.CheckOutDate;
+
+                roomAllocationModel.AnimalName = roomAllocation.IdAnimalNavigation?.Name;
+                roomAllocationModel.RoomType = roomAllocation.IdRoomNavigation?.RoomType;
+               
             }
             return roomAllocationModel;
         }

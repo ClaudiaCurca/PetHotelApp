@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PetHotelApp.Data;
 using PetHotelApp.Models;
@@ -137,7 +136,10 @@ namespace PetHotelApp.Controllers
         public ActionResult Delete(Guid id)
         {
             var owner = _repository.GetOwnerById(id);
-            return View("Delete",owner);
+            if (owner == null)
+                return NotFound();
+
+            return View("Delete", owner);
         }
 
         // POST: OwnerController/Delete/5
@@ -148,13 +150,13 @@ namespace PetHotelApp.Controllers
             try
             {
                 var owner = _repository.GetOwnerById(id);
+
                 _repository.DeleteOwner(owner);
-                
                 return RedirectToAction("Index");
             }
             catch
             {
-                return View("Delete");
+                return View("Delete", id);
             }
         }
     }

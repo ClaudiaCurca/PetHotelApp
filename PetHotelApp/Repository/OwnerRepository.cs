@@ -1,4 +1,5 @@
-﻿using PetHotelApp.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using PetHotelApp.Data;
 using PetHotelApp.Models;
 using PetHotelApp.Models.DBObjects;
 
@@ -28,10 +29,11 @@ namespace PetHotelApp.Repository
 
         public OwnerModel GetOwnerById(Guid id)
         {
-            OwnerModel ownerModel = new OwnerModel();
+            var dbOwner = dbContext.Owners.SingleOrDefault(x => x.IdOwner == id);
+            if (dbOwner == null)
+                return null;
 
-            ownerModel = MapDbObjectToModel(dbContext.Owners.SingleOrDefault(x => x.IdOwner == id));
-            return ownerModel;
+            return MapDbObjectToModel(dbOwner);
         }
 
         public OwnerModel GetOwnerByPhoneNumber(string phoneNumber)
@@ -86,12 +88,28 @@ namespace PetHotelApp.Repository
         }
         public void DeleteOwner(OwnerModel ownerModel)
         {
-            Owner existingOwner = dbContext.Owners.FirstOrDefault(x => x.IdOwner == ownerModel.IdOwner);
-            if (existingOwner != null)
+            var owner = dbContext.Owners
+            .Include(o => o.Animals)
+                .ThenInclude(a=>a.Reservations)
+            .Include(o =>o.Animals)
+                .ThenInclude(a=>a.RoomAllocations)
+            .FirstOrDefault(o => o.IdOwner == ownerModel.IdOwner);
+
+            if (owner == null)
             {
-                dbContext.Owners.Remove(existingOwner);
-                dbContext.SaveChanges();
+                return;
             }
+
+            foreach (var animal in owner.Animals)
+            {
+                dbContext.RoomAllocations.RemoveRange(animal.RoomAllocations);
+                dbContext.Reservations.RemoveRange(animal.Reservations);
+            }
+
+            dbContext.Animals.RemoveRange(owner.Animals);
+            dbContext.Owners.Remove(owner);
+
+            dbContext.SaveChanges();
         }
 
 

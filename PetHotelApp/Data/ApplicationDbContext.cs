@@ -203,6 +203,11 @@ namespace PetHotelApp.Data
                     .HasMaxLength(20)
                     .IsUnicode(false)
                     .HasColumnName("phoneNumber");
+
+                entity.HasMany(o => o.Animals)
+                      .WithOne(a => a.Owner)
+                      .HasForeignKey(a => a.IdOwner)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Reservation>(entity =>

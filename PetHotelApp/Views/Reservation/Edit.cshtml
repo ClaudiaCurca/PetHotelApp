@@ -4,64 +4,62 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1>Edit Reservation</h1>
 
-<h4>ReservationModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="IdReservation" />
-            <input type="hidden" asp-for="IdAnimal" />
-            <div class="form-group">
-                <label>Pet</label>
-                <input class="form-control" value="@Model.Animal?.Name" readonly />
-                <input type="hidden" asp-for="IdAnimal" />
-            </div>
-            <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>
-                <input asp-for="StartDate" class="form-control" />
-                <span asp-validation-for="StartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EndDate" class="control-label"></label>
-                <input asp-for="EndDate" class="form-control" />
-                <span asp-validation-for="EndDate" class="text-danger"></span>
-            </div>
-            @if (User.IsInRole("Admin"))
-            {
-                <div class="form-group">
-                    <label asp-for="Status" class="control-label"></label>
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
 
-                    <select asp-for="Status"
-                            class="form-control"
-                            asp-items="Html.GetEnumSelectList<ReservationStatus>()">
-                    </select>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                    <span asp-validation-for="Status" class="text-danger"></span>
+    <input type="hidden" asp-for="IdReservation" />
+    <input type="hidden" asp-for="IdAnimal" />
 
-                </div>
-            }
-            else
-            {
-                <div class="form-group">
-                    <label>Status</label>
-                    <input class="form-control" value="@Model.Status" readonly />
-                    <input type="hidden" asp-for="IdReservation" />
-                </div>
-            }
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+    <div class="form-group">
+        <label>Pet</label>
+        <input class="form-control" value="@Model.Animal?.Name" readonly />
     </div>
-</div>
+
+    <div class="form-group">
+        <label asp-for="StartDate"></label>
+        <input asp-for="StartDate" class="form-control" type="date" />
+        <span asp-validation-for="StartDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="EndDate"></label>
+        <input asp-for="EndDate" class="form-control" type="date" />
+        <span asp-validation-for="EndDate" class="text-danger"></span>
+    </div>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="form-group">
+            <label asp-for="Status"></label>
+            <select asp-for="Status" class="form-control"
+                    asp-items="Html.GetEnumSelectList<ReservationStatus>()">
+            </select>
+            <span asp-validation-for="Status" class="text-danger"></span>
+        </div>
+    }
+    else
+    {
+        <div class="form-group">
+            <label>Status</label>
+            <input class="form-control" value="@Model.Status" readonly />
+        </div>
+    }
+
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+</form>
 
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

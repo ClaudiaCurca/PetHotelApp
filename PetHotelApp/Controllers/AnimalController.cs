@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using NuGet.Protocol.Core.Types;
 using PetHotelApp.Data;
 using PetHotelApp.Models;
 using PetHotelApp.Repository;
@@ -15,6 +12,7 @@ namespace PetHotelApp.Controllers
         private ReservationRepository _reservationRepository;
         private AnimalRepository _animalRepository;
         private OwnerRepository _ownerRepository;
+
         public AnimalController(ApplicationDbContext dbContext)
         {
             _reservationRepository = new ReservationRepository(dbContext);
@@ -37,6 +35,7 @@ namespace PetHotelApp.Controllers
                 if (owner != null)
                 {
                     animals = animals.Where(a => a.IdOwner == owner.IdOwner).ToList();
+
                 }
                 else
                 {
@@ -51,7 +50,27 @@ namespace PetHotelApp.Controllers
         public ActionResult Details(Guid id)
         {
             var animal = _animalRepository.GetAnimalById(id);
-            return View("Details", animal);
+
+            if (animal == null)
+                return NotFound();
+
+            // Populează Owner
+            if (animal.Owner == null)
+            {
+                var ownerFromDb = _ownerRepository.GetOwnerById(animal.IdOwner);
+                if (ownerFromDb != null)
+                {
+                    animal.Owner = new OwnerModel
+                    {
+                        IdOwner = ownerFromDb.IdOwner,
+                        FirstName = ownerFromDb.FirstName,
+                        LastName = ownerFromDb.LastName,
+                        Email = ownerFromDb.Email
+                    };
+                }
+            }
+
+            return View("Details",animal);
         }
 
         // GET: AnimalController/Create
@@ -87,7 +106,27 @@ namespace PetHotelApp.Controllers
         public ActionResult Edit(Guid id)
         {
             var animal = _animalRepository.GetAnimalById(id);
-            return View("Edit",animal);
+
+            if (animal == null)
+                return NotFound();
+
+            // Populează Owner
+            if (animal.Owner == null)
+            {
+                var ownerFromDb = _ownerRepository.GetOwnerById(animal.IdOwner);
+                if (ownerFromDb != null)
+                {
+                    animal.Owner = new OwnerModel
+                    {
+                        IdOwner = ownerFromDb.IdOwner,
+                        FirstName = ownerFromDb.FirstName,
+                        LastName = ownerFromDb.LastName,
+                        Email = ownerFromDb.Email
+                    };
+                }
+            }
+
+            return View(animal);
         }
 
         // POST: AnimalController/Edit/5

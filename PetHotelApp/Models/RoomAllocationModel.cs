@@ -16,5 +16,8 @@ namespace PetHotelApp.Models
         [DataType(DataType.Date)]
         public DateTime CheckOutDate { get; set; }
 
+        public string? AnimalName { get; set; }
+        public string? RoomType {  get; set; }
+
     }
 }

@@ -23,10 +23,18 @@
                 <h4 class="card-title">@Model.Name</h4>
                 <table class="table table-borderless">
                     <tbody>
-                        <tr>
-                            <th>Owner ID</th>
-                            <td>@Model.IdOwner</td>
-                        </tr>
+                        @if(User.IsInRole("Admin"))
+                        {
+                            <tr>
+                                <th>Owner ID</th>
+                                <td>@Model.IdOwner</td>
+                            </tr>
+
+                            <tr>
+                                <th>Owner Name</th>
+                                <td>@Model.Owner?.FirstName @Model.Owner?.LastName</td>
+                            </tr>
+                        }
                         <tr>
                             <th>Breed</th>
                             <td>@Model.Breed</td>
