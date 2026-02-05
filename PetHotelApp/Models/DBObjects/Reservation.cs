@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PetHotelApp.Models.DBObjects
 {
@@ -13,6 +11,6 @@ namespace PetHotelApp.Models.DBObjects
         public ReservationStatus? Status { get; set; } = ReservationStatus.Pending;
 
         [ForeignKey("IdAnimal")]
-        public Animal Animal { get; set; } = null!;
+        public Animal? Animal { get; set; }
     }
 }

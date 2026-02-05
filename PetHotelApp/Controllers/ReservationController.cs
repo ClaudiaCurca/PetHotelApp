@@ -52,7 +52,7 @@ namespace PetHotelApp.Controllers
         }
 
         // GET: ReservationController/Create
-        [Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = "User")]
         public ActionResult Create()
         {
             PopulateAnimalsDropdown();
@@ -62,39 +62,29 @@ namespace PetHotelApp.Controllers
         // POST: ReservationController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "User,Admin")]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(ReservationModel model)
         {
-            try
+            PopulateAnimalsDropdown();
+
+            if (!User.IsInRole("Admin"))
             {
-                ReservationModel model = new ReservationModel();
-                if (!TryUpdateModelAsync(model).Result)
+                var animal = _animalRepository.GetAnimalById(model.IdAnimal);
+                var owner = _ownerRepository.GetOwnerById(animal.IdOwner);
+
+                if (owner.Email != User.Identity!.Name)
                 {
-                    PopulateAnimalsDropdown();
+                    ModelState.AddModelError("", "You can only reserve your own animals.");
                     return View(model);
                 }
-
-                if (!User.IsInRole("Admin"))
-                {
-                    var animal = _animalRepository.GetAnimalById(model.IdAnimal);
-                    var owner = _ownerRepository.GetOwnerById(animal.IdOwner);
-
-                    if (owner.Email != User.Identity.Name)
-                    {
-                        ModelState.AddModelError("", "You can only reserve your own animals.");
-                        PopulateAnimalsDropdown();
-                        return View(model);
-                    }
-                }
-
-                _repository.CreateReservation(model);
-                return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                PopulateAnimalsDropdown();
-                return View("Create");
-            }
+
+            if (model.IdReservation == Guid.Empty)
+                model.IdReservation = Guid.NewGuid();
+
+            _repository.CreateReservation(model);
+
+            return RedirectToAction(nameof(Index));
+
         }
 
         // GET: ReservationController/Edit/5
@@ -112,48 +102,34 @@ namespace PetHotelApp.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(ReservationModel model)
         {
-            // Validation
+            ModelState.Remove("Animal.Name");
+
             if (!ModelState.IsValid)
             {
+                model.Animal = _animalRepository.GetAnimalById(model.IdAnimal);
+
                 ViewBag.StatusList = Enum.GetValues(typeof(ReservationStatus))
                     .Cast<ReservationStatus>()
                     .ToList();
+
                 return View(model);
             }
 
-            // Admin can edit anything
             if (!User.IsInRole("Admin"))
             {
-                var userEmail = User.Identity.Name;
 
-                // Get the reservation from the DB with Animal
-                var reservationFromDb = _repository.GetReservationById(model.IdReservation);
+                var animal = _animalRepository.GetAnimalById(model.IdAnimal);
+                var owner = _ownerRepository.GetOwnerById(animal.IdOwner);
 
-                // Check nulls
-                if (reservationFromDb == null || reservationFromDb.Animal == null)
-                {
-                    ModelState.AddModelError("", "Reservation not found.");
-                    ViewBag.StatusList = Enum.GetValues(typeof(ReservationStatus))
-                        .Cast<ReservationStatus>()
-                        .ToList();
-                    return View(model);
-                }
-
-                // Check ownership
-                if (reservationFromDb.Animal.IdOwner != _ownerRepository.GetAllOwners()
-                                                  .First(o => o.Email == userEmail).IdOwner)
+                if (owner.Email != User.Identity!.Name)
                 {
                     ModelState.AddModelError("", "You cannot edit this reservation.");
-                    ViewBag.StatusList = Enum.GetValues(typeof(ReservationStatus))
-                        .Cast<ReservationStatus>()
-                        .ToList();
+                    ViewBag.StatusList = Enum.GetValues(typeof(ReservationStatus)).Cast<ReservationStatus>();
                     return View(model);
                 }
             }
 
-            // Everything ok, update reservation
             _repository.UpdateReservation(model);
-
             return RedirectToAction(nameof(Index));
         }
 

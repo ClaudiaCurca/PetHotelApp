@@ -10,10 +10,9 @@
     @Html.AntiForgeryToken()
 
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
     <input type="hidden" asp-for="IdReservation" />
-    <input type="hidden" asp-for="IdAnimal" />
-
+    <input type="hidden" asp-for="IdAnimal" value="@Model.IdAnimal" />
+    
     <div class="form-group">
         <label>Pet</label>
         <input class="form-control" value="@Model.Animal?.Name" readonly />
@@ -55,7 +54,7 @@
 </form>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>
 
 @section Scripts {

@@ -28,28 +28,44 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>            
-                @Html.HiddenFor(modelItem => item.IdRoom)            
+        @foreach (var item in Model)
+        {
+            <tr>
+                @Html.HiddenFor(modelItem => item.IdRoom)
                 @Html.HiddenFor(modelItem => item.IdAnimal)
-            <td>
-                @Html.DisplayFor(modelItem => item.AnimalName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RoomType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CheckInDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CheckOutDate)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.IdAllocation }) |
-                @Html.ActionLink("Details", "Details", new { id = item.IdAllocation }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.IdAllocation })
-            </td>
-        </tr>
-}
+                <td>
+                    @Html.DisplayFor(modelItem => item.AnimalName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RoomType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CheckInDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CheckOutDate)
+                </td>
+                <td class="text-nowrap">
+                    <a asp-action="Edit"
+                       asp-route-id="@item.IdAllocation"
+                       class="btn btn-sm btn-primary me-1">
+                        Edit
+                    </a>
+
+                    <a asp-action="Details"
+                       asp-route-id="@item.IdAllocation"
+                       class="btn btn-sm btn-info me-1">
+                        Details
+                    </a>
+
+                    <a asp-action="Delete"
+                       asp-route-id="@item.IdAllocation"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Are you sure you want to delete this?');">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

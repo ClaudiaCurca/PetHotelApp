@@ -1,4 +1,5 @@
-﻿using PetHotelApp.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using PetHotelApp.Data;
 using PetHotelApp.Models;
 using PetHotelApp.Models.DBObjects;
 
@@ -100,12 +101,20 @@ namespace PetHotelApp.Repository
 
         public void DeleteAnimal(AnimalModel animalModel)
         {
-            Animal existingAnimal = dbContext.Animals.FirstOrDefault(x => x.IdAnimal == animalModel.IdAnimal);
-            if (existingAnimal != null)
-            {
-                dbContext.Animals.Remove(existingAnimal);
-                dbContext.SaveChanges();
-            }
+            var animal = dbContext.Animals
+           .Include(a => a.Reservations)
+           .Include(a => a.RoomAllocations)
+           .FirstOrDefault(a => a.IdAnimal == animalModel.IdAnimal);
+
+            if (animal == null)
+                return;
+
+            dbContext.RoomAllocations.RemoveRange(animal.RoomAllocations);
+            dbContext.Reservations.RemoveRange(animal.Reservations);
+
+            dbContext.Animals.Remove(animal);
+
+            dbContext.SaveChanges();
         }
 
         private AnimalModel MapDbObjectToModel(Animal dbAnimal)

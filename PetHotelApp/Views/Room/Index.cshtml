@@ -6,48 +6,55 @@
 
 <h1>Rooms</h1>
 
-<p>
-    @if (User.IsInRole("Admin"))
-    {
-        <a asp-action="Create">Create New</a>
-    }
-</p>
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Create New</a>
+    </p>
+}
+
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Capacity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PricePerDay)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RoomType)
-            </th>
+            <th>Capacity</th>
+            <th>Price Per Day</th>
+            <th>Room Type</th>
             <th></th>
         </tr>
     </thead>
+
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Capacity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PricePerDay)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RoomType)
-            </td>
-                <td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Capacity</td>
+                <td>@item.PricePerDay</td>
+                <td>@item.RoomType</td>
+
+                <td class="text-nowrap">
+                    <a asp-action="Details"
+                       asp-route-id="@item.IdRoom"
+                       class="btn btn-sm btn-info me-1">
+                        Details
+                    </a>
+
                     @if (User.IsInRole("Admin"))
                     {
-                        <a asp-action="Edit" asp-route-id="@item.IdRoom">Edit</a>
-                        <a asp-action = "Delete" asp-route-id = "@item.IdRoom" >Delete</a > 
+                        <a asp-action="Edit"
+                           asp-route-id="@item.IdRoom"
+                           class="btn btn-sm btn-primary me-1">
+                            Edit
+                        </a>
+
+                        <a asp-action="Delete"
+                           asp-route-id="@item.IdRoom"
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Are you sure you want to delete this room?');">
+                            Delete
+                        </a>
                     }
-                    <a asp-action="Details" asp-route-id="@item.IdRoom">Details</a>
                 </td>
-        </tr>
-}
+            </tr>
+        }
     </tbody>
 </table>

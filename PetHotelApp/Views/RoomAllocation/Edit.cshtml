@@ -11,17 +11,19 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
+
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="IdRoom" class="control-label"></label>
-                <input asp-for="IdRoom" class="form-control" />
-                <span asp-validation-for="IdRoom" class="text-danger"></span>
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="form-group">
+                    <label>Id Room</label>
+                    <input class="form-control" value="@Model.IdRoom" readonly />
+                </div>
+                <div class="form-group">
+                    <label>Id Pet</label>
+                <input class="form-control" value="@Model.IdAnimal" readonly />
             </div>
-            <div class="form-group">
-                <label asp-for="IdAnimal" class="control-label"></label>
-                <input asp-for="IdAnimal" class="form-control" />
-                <span asp-validation-for="IdAnimal" class="text-danger"></span>
-            </div>
+            }
             <div class="form-group">
                 <label asp-for="CheckInDate" class="control-label"></label>
                 <input asp-for="CheckInDate" class="form-control" />
@@ -40,7 +42,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-sm btn-secondary">Back to List</a>
 </div>
 
 @section Scripts {

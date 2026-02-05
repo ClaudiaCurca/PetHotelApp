@@ -21,7 +21,7 @@ namespace PetHotelApp.Repository
         {
             var reservations = dbContext.Reservations
                 .Include(r => r.Animal)
-                .ThenInclude(a => a.Owner)
+                    .ThenInclude(a => a.Owner)
                 .ToList();
 
             return reservations.Select(r => MapDbObjectToModel(r)).ToList();
@@ -30,9 +30,9 @@ namespace PetHotelApp.Repository
         public ReservationModel GetReservationById(Guid id)
         {
             var reservation = dbContext.Reservations
-              .Include(r => r.Animal)
-              .ThenInclude(a => a.Owner)
-              .FirstOrDefault(r => r.IdReservation == id);
+                .Include(r => r.Animal)
+                    .ThenInclude(a => a.Owner)
+                .FirstOrDefault(r => r.IdReservation == id);
 
             return MapDbObjectToModel(reservation);
         }
@@ -58,7 +58,6 @@ namespace PetHotelApp.Repository
             }
             return reservationList;
         }
-
         public List<ReservationModel> GetReservationsByEffectiveDates(DateTime startDate, DateTime endDate)
         {
             List<ReservationModel> reservationList = new List<ReservationModel>();
@@ -72,22 +71,25 @@ namespace PetHotelApp.Repository
 
         public void CreateReservation(ReservationModel reservationModel)
         {
-            reservationModel.IdReservation = Guid.NewGuid();
+            if (reservationModel.IdReservation == Guid.Empty)
+                reservationModel.IdReservation = Guid.NewGuid();
+
+            Console.WriteLine("Reservation ID in repository: " + reservationModel.IdReservation);
+
             dbContext.Reservations.Add(MapModelToDbObject(reservationModel));
             dbContext.SaveChanges();
         }
 
         public void UpdateReservation(ReservationModel reservationModel)
         {
-            Reservation existingReservation = dbContext.Reservations.FirstOrDefault(x => x.IdReservation == reservationModel.IdReservation);
+            Reservation existingReservation = dbContext.Reservations
+                .FirstOrDefault(x => x.IdReservation == reservationModel.IdReservation);
             if (existingReservation != null)
             {
-                existingReservation.IdAnimal = reservationModel.IdAnimal;
                 existingReservation.StartDate = reservationModel.StartDate;
                 existingReservation.EndDate = reservationModel.EndDate;
                 existingReservation.Status = reservationModel.Status;
 
-                existingReservation.IdAnimal = reservationModel.IdAnimal;
                 dbContext.SaveChanges();
             }
         }
@@ -116,37 +118,38 @@ namespace PetHotelApp.Repository
 
         private ReservationModel MapDbObjectToModel(Reservation dbReservation)
         {
-            ReservationModel model = new ReservationModel();
-            if (dbReservation != null)
+            if (dbReservation == null) return null!;
+
+            var model = new ReservationModel
             {
-                model.IdReservation = dbReservation.IdReservation;
-                model.IdAnimal = dbReservation.IdAnimal;
-                model.StartDate = dbReservation.StartDate;
-                model.EndDate = dbReservation.EndDate;
-                model.Status = dbReservation.Status;
-                if (dbReservation.Animal != null)
+                IdReservation = dbReservation.IdReservation,
+                IdAnimal = dbReservation.IdAnimal,
+                StartDate = dbReservation.StartDate,
+                EndDate = dbReservation.EndDate,
+                Status = dbReservation.Status
+            };
+
+            if (dbReservation.Animal != null && dbReservation.Animal.Owner != null)
+            {
+                model.Animal = new AnimalModel
                 {
-                    model.Animal = new AnimalModel
+                    IdAnimal = dbReservation.Animal.IdAnimal,
+                    Name = dbReservation.Animal.Name,
+                    IdOwner = dbReservation.Animal.IdOwner,
+                    Breed = dbReservation.Animal.Breed,
+                    Owner = new OwnerModel
                     {
-                        IdAnimal = dbReservation.Animal.IdAnimal,
-                        Name = dbReservation.Animal.Name,
-                        IdOwner = dbReservation.Animal.IdOwner,
-                        Breed = dbReservation.Animal.Breed,
-
-                        Owner = new OwnerModel
-                        {
-                            IdOwner = dbReservation.Animal.Owner.IdOwner,
-                            FirstName = dbReservation.Animal.Owner.FirstName,
-                            LastName = dbReservation.Animal.Owner.LastName,
-                            Email = dbReservation.Animal.Owner.Email
-                        }
-                    };
-
-
-                }
+                        IdOwner = dbReservation.Animal.Owner.IdOwner,
+                        FirstName = dbReservation.Animal.Owner.FirstName,
+                        LastName = dbReservation.Animal.Owner.LastName,
+                        Email = dbReservation.Animal.Owner.Email
+                    }
+                };
             }
 
             return model;
+
+            
         }
     }
 }

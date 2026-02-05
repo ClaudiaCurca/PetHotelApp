@@ -9,7 +9,7 @@
 @if (User.IsInRole("User"))
 {
     <p>
-    <a asp-action="Create">Create New</a>
+        <a asp-action="Create" class="btn btn-primary">Create New</a>
     </p>
 }
 <table class="table">
@@ -40,10 +40,25 @@
                 <td>@item.StartDate.ToString("dd/MM/yyyy")</td>
                 <td>@item.EndDate.ToString("dd/MM/yyyy")</td>
                 <td>@item.Status</td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.IdReservation }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.IdReservation }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.IdReservation })
+                <td class="text-nowrap">
+                    <a asp-action="Edit"
+                       asp-route-id="@item.IdReservation"
+                       class="btn btn-sm btn-primary me-1">
+                        Edit
+                    </a>
+
+                    <a asp-action="Details"
+                       asp-route-id="@item.IdReservation"
+                       class="btn btn-sm btn-info me-1">
+                        Details
+                    </a>
+
+                    <a asp-action="Delete"
+                       asp-route-id="@item.IdReservation"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Are you sure you want to delete this?');">
+                        Delete
+                    </a>
                 </td>
             </tr>
         }
