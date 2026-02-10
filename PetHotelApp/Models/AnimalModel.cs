@@ -7,7 +7,6 @@ namespace PetHotelApp.Models
     {
         [Key]
         public Guid IdAnimal { get; set; }
-
         
         public Guid IdOwner { get; set; }
 

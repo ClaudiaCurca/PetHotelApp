@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PetHotelApp.Data;
 using PetHotelApp.Models;
-using PetHotelApp.Models.DBObjects;
 using PetHotelApp.Repository;
 
 namespace PetHotelApp.Controllers

@@ -15,6 +15,6 @@ namespace PetHotelApp.Models.DBObjects
         public decimal? PricePerDay { get; set; }
         public string? RoomType { get; set; }
 
-        public virtual ICollection<RoomAllocation> RoomAllocations { get; set; }
+        public ICollection<RoomAllocation> RoomAllocations { get; set; }
     }
 }

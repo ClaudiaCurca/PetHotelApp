@@ -60,7 +60,6 @@ namespace PetHotelApp.Repository
             }
             return roomAllocationList;
         }
-
         public List<RoomAllocationModel> GetReservationsByEffectiveDates(DateTime startDate, DateTime endDate)
         {
             List<RoomAllocationModel> roomAllocationList = new List<RoomAllocationModel>();
@@ -71,6 +70,7 @@ namespace PetHotelApp.Repository
             return roomAllocationList;
 
         }
+        
         public void CreateRoomAllocation(RoomAllocationModel roomAllocationModel)
         {
             roomAllocationModel.IdAllocation = Guid.NewGuid();
@@ -128,7 +128,6 @@ namespace PetHotelApp.Repository
 
                 roomAllocationModel.AnimalName = roomAllocation.IdAnimalNavigation?.Name;
                 roomAllocationModel.RoomType = roomAllocation.IdRoomNavigation?.RoomType;
-               
             }
             return roomAllocationModel;
         }

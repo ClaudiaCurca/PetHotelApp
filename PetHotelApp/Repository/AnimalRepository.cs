@@ -63,7 +63,6 @@ namespace PetHotelApp.Repository
             }
             return animalList;
         }
-        // calculate the age of the animal using dateOfBirth and linq
         public List<AnimalModel> GetAllAnimalsByAge(int age)
         {
             List<AnimalModel> animalList = new List<AnimalModel>();
@@ -129,7 +128,6 @@ namespace PetHotelApp.Repository
                 animalModel.Notes = dbAnimal.Notes;
                 animalModel.Photo = dbAnimal.Photo;
                 animalModel.DateOfBirth = dbAnimal.DateOfBirth;
-
             }
             return animalModel;
 

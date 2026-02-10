@@ -9,13 +9,11 @@ namespace PetHotelApp.Controllers
     [Authorize]
     public class AnimalController : Controller
     {
-        private ReservationRepository _reservationRepository;
         private AnimalRepository _animalRepository;
         private OwnerRepository _ownerRepository;
 
         public AnimalController(ApplicationDbContext dbContext)
         {
-            _reservationRepository = new ReservationRepository(dbContext);
             _animalRepository = new AnimalRepository(dbContext);
             _ownerRepository = new OwnerRepository(dbContext);
         }

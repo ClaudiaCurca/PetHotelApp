@@ -11,7 +11,7 @@ namespace PetHotelApp.Models.DBObjects
         public DateTime CheckInDate { get; set; }
         public DateTime CheckOutDate { get; set; }
 
-        public virtual Animal IdAnimalNavigation { get; set; } = null!;
-        public virtual Room IdRoomNavigation { get; set; } = null!;
+        public Animal IdAnimalNavigation { get; set; } = null!;
+        public Room IdRoomNavigation { get; set; } = null!;
     }
 }

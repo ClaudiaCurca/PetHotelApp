@@ -16,6 +16,6 @@ namespace PetHotelApp.Models.DBObjects
         public string PhoneNumber { get; set; } = null!;
         public string Email { get; set; } = null!;
 
-        public virtual ICollection<Animal> Animals { get; set; }
+        public ICollection<Animal> Animals { get; set; }
     }
 }

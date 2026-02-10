@@ -21,8 +21,8 @@ namespace PetHotelApp.Models.DBObjects
         [ForeignKey("IdOwner")]
         public Owner Owner { get; set; } = null!;
 
-        public virtual ICollection<Reservation> Reservations { get; set; }
-        public virtual ICollection<RoomAllocation> RoomAllocations { get; set; }
+        public ICollection<Reservation> Reservations { get; set; }
+        public ICollection<RoomAllocation> RoomAllocations { get; set; }
 
 
     }

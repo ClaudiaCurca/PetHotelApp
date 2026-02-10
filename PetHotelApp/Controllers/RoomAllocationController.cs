@@ -52,7 +52,6 @@ namespace PetHotelApp.Controllers
         {
             try
             {
-
                 RoomAllocationModel allocation = new RoomAllocationModel();
                 var task = TryUpdateModelAsync(allocation);
                 task.Wait();
